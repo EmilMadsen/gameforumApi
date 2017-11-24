@@ -10,7 +10,7 @@ class CommentsRepository{
         $commentsArray = [];
         try{
             $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL security.comment_get_from_post(:auth_token, :post_id, :amount, :offset)");
+            $stmt = $connection->prepare("CALL game_forum.comment_get_from_post(:auth_token, :post_id, :amount, :offset)");
             $stmt->bindParam("auth_token", $token, PDO::PARAM_STR );
             $stmt->bindParam('post_id', $post_id, PDO::PARAM_INT);
             $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
@@ -57,7 +57,7 @@ class CommentsRepository{
 
         try{
             $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL security.comment_create(:auth_token,:post_id, :content)");
+            $stmt = $connection->prepare("CALL game_forum.comment_create(:auth_token,:post_id, :content)");
             $stmt->bindParam('auth_token', $token, PDO::PARAM_STR );
             $stmt->bindParam('post_id', $post_id, PDO::PARAM_INT);
             $stmt->bindParam('content', $content, PDO::PARAM_STR);

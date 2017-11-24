@@ -3,7 +3,7 @@
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Repositories/DatabaseConnection.php');
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Services/SanitizeService.php');
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Services/ResponseService.php');
-include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/Post_p');
+include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/Post.php');
 
 
 
@@ -19,7 +19,7 @@ class PostsRepository{
 
         try{
             $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL security.post_get_recent(:auth_token ,:amount, :off_set)");//, @result)");
+            $stmt = $connection->prepare("CALL game_forum.post_get_recent(:auth_token ,:amount, :off_set)");//, @result)");
             $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
             $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
             $stmt->bindParam('off_set', $offset, PDO::PARAM_INT);
@@ -52,7 +52,7 @@ class PostsRepository{
 
         try{
             $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL security.post_get_from_wall(:auth_token ,:user_id, :amount, :off_set)");// ,@result)");
+            $stmt = $connection->prepare("CALL game_forum.post_get_from_wall(:auth_token ,:user_id, :amount, :off_set)");// ,@result)");
             $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
             $stmt->bindParam('user_id', $user_id, PDO::PARAM_INT);
             $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
@@ -84,7 +84,7 @@ class PostsRepository{
         $id = 0;
         try{
             $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL security.post_create(:auth_token ,:title, :content)");
+            $stmt = $connection->prepare("CALL game_forum.post_create(:auth_token ,:title, :content)");
             $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
             $stmt->bindParam('title', $title, PDO::PARAM_STR);
             $stmt->bindParam('content', $content, PDO::PARAM_STR);

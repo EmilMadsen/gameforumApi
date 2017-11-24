@@ -21,13 +21,14 @@ $POSTS_DEFAULT_OFFSET = 0;
 RequestService::enableCORS();
 $ipAddress = RequestService::fetIP();
 
-RequestService::TokenCheck();
-$token = RequestService::GetToken();
+//RequestService::TokenCheck();
+//$token = RequestService::GetToken();
 
 $postRepository = new PostsRepository();
 
 switch ($method){
     case 'GET':
+        die("Posts.... ");
         getPosts($token,$POSTS_DEFAULT_AMOUNT,$POSTS_DEFAULT_OFFSET);
         break;
     case 'POST':

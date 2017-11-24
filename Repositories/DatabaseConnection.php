@@ -13,7 +13,7 @@ class DatabaseConnection{
     public static function getConnection(){
 
         if (!isset(static::$db)) {
-            static::$db = new PDO('mysql:host:localhost',"api","5VNM3gZ3uzVLdqsqv2A0");
+            static::$db = new PDO('mysql:host:localhost',"root","");
             static::$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         return static::$db;

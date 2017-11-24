@@ -28,7 +28,7 @@ class AuthProcedures{
 
         try{
             $connection = DatabaseConnection::getConnection();
-            $stmt = $connection->prepare("call security.auth_fetch_salt(:username, @salt)");
+            $stmt = $connection->prepare("call game_forum.auth_fetch_salt(:username, @salt)");
 
             $stmt->bindParam(":username", $username);
             $stmt->execute();
@@ -54,7 +54,7 @@ class AuthProcedures{
         try{
             $connection = $this->getDatabaseConnection();
 
-            $stmt = $connection->prepare("CALL security.auth_login_user(:username,:ip_address, :hashed_password,@token,@timeAlive)");
+            $stmt = $connection->prepare("CALL game_forum.auth_login_user(:username,:ip_address, :hashed_password,@token,@timeAlive)");
             $stmt->bindParam('username', $username, PDO::PARAM_STR );
             $stmt->bindParam('ip_address', $ipAddress, PDO::PARAM_STR);
             $stmt->bindParam('hashed_password', $hashedPassword, PDO::PARAM_STR);
@@ -89,7 +89,7 @@ class AuthProcedures{
 
         try{
             $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("Call security.auth_create_user(:username, :hashed_password, :salt)");
+            $stmt = $connection->prepare("Call game_forum.auth_create_user(:username, :hashed_password, :salt)");
             $stmt->bindParam('username', $username);
             $stmt->bindParam('hashed_password', $hashedPassword);
             $stmt->bindParam('salt', $salt);
@@ -99,11 +99,15 @@ class AuthProcedures{
             if ($e->getCode() == 23000){
                 ResponseService::ResponseBadRequest("Username already in use");
             }else{
-                ResponseService::ResponseInternalError();
+                ResponseService::ResponseBadRequest("Something else");
+
+//                ResponseService::ResponseInternalError();
             }
 
         }catch (Exception $e){
-            ResponseService::ResponseInternalError();
+            ResponseService::ResponseBadRequest("Something bad..");
+
+//            ResponseService::ResponseInternalError();
         }
     }
 
