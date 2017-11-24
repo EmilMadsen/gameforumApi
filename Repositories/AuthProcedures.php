@@ -51,6 +51,7 @@ class AuthProcedures{
 
     public function loginUser($username,$ipAddress,$hashedPassword){
 
+//        die($username);
         try{
             $connection = $this->getDatabaseConnection();
 
@@ -76,11 +77,17 @@ class AuthProcedures{
             if ($e->getCode() == 45000) {
                 ResponseService::ResponseBadRequest($e->errorInfo[2]);
             }else{
-                ResponseService::ResponseInternalError();
+                die($e);
+                ResponseService::ResponseBadRequest("PDO Exception in Login User");
+
+//                ResponseService::ResponseInternalError();
             }
         }
         catch (Exception $e){
-            ResponseService::ResponseInternalError();
+
+            ResponseService::ResponseBadRequest("Exception in Login User");
+
+//            ResponseService::ResponseInternalError();
         }
         return $authToken;
     }

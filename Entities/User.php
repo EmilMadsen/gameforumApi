@@ -117,6 +117,8 @@ class User{
         $procedures->createUser($this->username,$this->hashedPassword,$this->salt);
         $token = $this->tryLogin($ip);
 
+
+
         return $token;
     }
 
