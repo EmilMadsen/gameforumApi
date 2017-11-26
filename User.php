@@ -39,12 +39,9 @@ switch ($request){
 }
 
 function register($input,$ip){
-
     $User = new User();
     $User->constructFromHashMap($input);
     $authToken = $User->createUser($ip);
-    die("hgot assse");
-
     ResponseService::ResponseJSON($authToken->toJson());
 }
 

@@ -175,7 +175,7 @@ class User{
 
         if (!$validation->isValidUsername($this->username)
             || !$validation->isValidPassword($this->password) ) {
-            ResponseService::ResponseBadRequest("Invalid Request-Body");
+            ResponseService::ResponseBadRequest("Invalid Request-Body, Bad Username/Password");
         }
     }
 
