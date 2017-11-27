@@ -67,8 +67,12 @@ class Game extends AbstractModel {
         $this->failOnInvalidModel($this->title, $this->description);
     }
 
-    public function getSpecificGame()
+    public function getSpecificGame($token, $id)
     {
+
+        $repo = new GameRepository();
+
+        return $repo->getSpecificGame($token, $id);
 
     }
 

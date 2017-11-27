@@ -52,7 +52,11 @@ switch ($method)
 // Get a specific game, along with its posts.
 function getSpecificGame($token, $id)
 {
-    ResponseService::ResponseNotFound();
+    $game = new Game();
+
+    $specificGame = $game->getSpecificGame($token, $id);
+
+    ResponseService::ResponseJSON($game->arrayToJson($specificGame));
 }
 
 function getGameOverview($token)

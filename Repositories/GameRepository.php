@@ -107,34 +107,62 @@ class GameRepository
 
     // Get specific game with its posts and info.
     //--------------------------------------------------------------------------
-    public function getSpecificGame($authToken, $batch_size, $batch, $id)
+    public function getSpecificGame($authToken, $id)
+//  public function getSpecificGame($authToken, $batch_size=100, $batch=1, $id) TODO:
     {
-        $gameArray = [];
+        return [
 
-        try {
-            $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL game_forum.games_get_specific(:auth_token ,:batch_size, :batch, :id)");
-            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR);
-            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
-            $stmt->bindParam('batch', $batch, PDO::PARAM_INT);
-            $stmt->bindParam('id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            'game' => [
+                'id' => 123,
+                'title' => 'Game Title!',
+                'postCount' => 123,
+                'description' => 'Its cool LOOOOOOOOOOOOOOOOOOOONG DESCIRPTION',
+                'src' => 'Hearthstone-285x380.jpg',
+                'favorite' => true
 
-            if (!empty($result)) {
-                $gameArray = $this->makeGamesFromResultSet($result);
-            }
-        } catch (PDOException $e) {
-            if ($e->getCode() == 45000) {
-                ResponseService::ResponseBadRequest($e->errorInfo[2]);
-            } else {
-                ResponseService::ResponseInternalError();
-            }
-        } catch (Exception $e) {
-            ResponseService::ResponseInternalError();
-        }
+            ],
+            'posts' => [
+                '0' => [
+                    'id' => 321,
+                    'title' => 'game titlez',
+                    'commentCount' => 123,
+                    'description' => 'Its cool',
 
-        return $gameArray;
+                ],
+                '1' => [
+                    'id' => 321,
+                    'title' => 'game titlez',
+                    'commentCount' => 123,
+                    'description' => 'Its cool',
+                ]
+            ]
+        ];
+//        $gameArray = [];
+//
+//        try {
+//            $connection = $this->getDatabaseConnection();
+//            $stmt = $connection->prepare("CALL game_forum.games_get_specific(:auth_token ,:batch_size, :batch, :id)");
+//            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR);
+//            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
+//            $stmt->bindParam('batch', $batch, PDO::PARAM_INT);
+//            $stmt->bindParam('id', $id, PDO::PARAM_INT);
+//            $stmt->execute();
+//            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//
+//            if (!empty($result)) {
+//                $gameArray = $this->makeGamesFromResultSet($result);
+//            }
+//        } catch (PDOException $e) {
+//            if ($e->getCode() == 45000) {
+//                ResponseService::ResponseBadRequest($e->errorInfo[2]);
+//            } else {
+//                ResponseService::ResponseInternalError();
+//            }
+//        } catch (Exception $e) {
+//            ResponseService::ResponseInternalError();
+//        }
+//
+//        return $gameArray;
     }
 
     // Get DB connection
