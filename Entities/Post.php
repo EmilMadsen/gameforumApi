@@ -9,11 +9,13 @@
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Repositories/PostsRepository.php');
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Services/ResponseService.php');
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Logic/Validation.php');
+include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/AbstractModel.php');
+
 
 /**
  * Class Post_ My version of the Post Class, including functionality
  */
-class Post{
+class Post extends AbstractModel {
 
     private $id;
     private $user_id;
@@ -28,11 +30,10 @@ class Post{
         $data = json_decode($json, true);
         if (empty($data)) ResponseService::ResponseBadRequest("Invalid Request-Body");
         foreach ($data AS $key => $value) $this->{$key} = $value;
-        $this->failOnInvalidModel();
+        $this->failOnInvalidModel($this->title, $this->content);
     }
 
-    public function construct($id, $userId, $username, $title, $content,
-                              $createdAt, $updatedAt, $deletedAt){
+    public function construct($id, $userId, $username, $title, $content, $createdAt, $updatedAt, $deletedAt){
         $this->id = $id;
         $this->user_id = $userId;
         $this->username = $username;
@@ -44,7 +45,7 @@ class Post{
     }
 
     public function createPost($token){
-        $this->failOnInvalidModel();
+        $this->failOnInvalidModel($this->title, $this->content);
         $validation = new Validation();
         $procedures = new PostsRepository();
         $this->title = SanitizeService::SanitizeString($this->title);
@@ -77,31 +78,5 @@ class Post{
         }
         return $procedures->getPostsByUser($token,$userId,$amount,$offset);
     }
-
-    public function arrayToJson($posts){
-        $result = "[";
-        if (!empty($posts)){
-            foreach ($posts as $post){
-                $result .= json_encode(get_object_vars($post)).', ';
-            }
-            $result = substr($result,0,strlen($result)-2);
-        }
-        $result .= "]";
-        return $result;
-    }
-
-
-    public function idToJson(){
-        return json_encode($this->id);
-    }
-
-    private function failOnInvalidModel(){
-        $validation = new Validation();
-
-        if (!$validation->isValidTitle($this->title) ||
-            !$validation->isValidContent($this->content)){
-            ResponseService::ResponseBadRequest("Invalid Request-Body");
-        }
-     }
 
 }

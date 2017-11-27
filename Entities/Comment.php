@@ -10,6 +10,8 @@ include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Repositories/CommentsRepos
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Services/ResponseService.php');
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Logic/Validation.php');
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Services/SanitizeService.php');
+include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/AbstractModel.php');
+
 
 
 class Comment{

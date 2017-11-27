@@ -28,7 +28,7 @@ $postRepository = new PostsRepository();
 
 switch ($method){
     case 'GET':
-        die("Posts.... ");
+//        die("Posts.... ");
         getPosts($token,$POSTS_DEFAULT_AMOUNT,$POSTS_DEFAULT_OFFSET);
         break;
     case 'POST':

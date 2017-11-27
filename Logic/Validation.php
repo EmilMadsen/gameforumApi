@@ -18,7 +18,7 @@ class Validation{
      * @var string, a static value used when hashing password for each user.
      * @author Nikolaj Kæmpe.
      */
-    private $pepper = "IfSaltIsNotEnough,MakeSureToUseSomePepperAsWell!!";
+    private static $pepper = "IfSaltIsNotEnough,MakeSureToUseSomePepperAsWell!!";
 
 
     public function __construct()
@@ -33,8 +33,8 @@ class Validation{
      * @return string, representing the newly created hashedPassword.
      * @author Nikolaj Kæmpe.
      */
-    public function hashPassword($password, $salt){
-        return hash("SHA256",md5($password.$salt.$this->pepper));
+    public static function hashPassword($password, $salt){
+        return hash("SHA256",md5($password . $salt . self::$pepper));
     }
 
     /**
@@ -47,8 +47,8 @@ class Validation{
      * matches the hashedPassword.
      * @author Nikolaj Kæmpe.
      */
-    public function comparePassword($password, $hashedPassword,$salt){
-        $result = password_verify($password.$salt.$this->pepper,$hashedPassword);
+    public static function comparePassword($password, $hashedPassword, $salt){
+        $result = password_verify($password . $salt . self::$pepper, $hashedPassword);
         return $result;
     }
 
@@ -59,9 +59,9 @@ class Validation{
      * @return bool, representing whether the supplied username is valid or not.
      * @author Nikolaj Kæmpe.
      */
-    public  function isValidUsername($username){
-        return ($this->isStringLengthBetween(4,32,$username) &&
-            $this->containsLettersAndNumbersOnly($username)
+    public static function isValidUsername($username){
+        return (self::isStringLengthBetween(4,32,$username) &&
+            self::containsLettersAndNumbersOnly($username)
         );
     }
 
@@ -72,11 +72,11 @@ class Validation{
      * @return bool, representing whether the supplied password is valid or not.
      * @author Nikolaj Kæmpe.
      */
-    public function isValidPassword($password){
-        return ($this->isStringLengthBetween(6,32,$password) &&
-            $this->containsNumeric($password) &&
-            $this->containsLowerCase($password) &&
-            $this->containsUpperCase($password));
+    public static function isValidPassword($password){
+        return (self::isStringLengthBetween(6,32,$password) &&
+            self::containsNumeric($password) &&
+            self::containsLowerCase($password) &&
+            self::containsUpperCase($password));
     }
 
     /**
@@ -85,8 +85,8 @@ class Validation{
      * @return bool, representing whether the supplied hashedPassword is valid or not.
      * @author Nikolaj Kæmpe.
      */
-    public function isValidHashedPassword($hashedPassword){
-        return ($this->isStringLengthBetween(59,60,$hashedPassword));
+    public static function isValidHashedPassword($hashedPassword){
+        return (self::isStringLengthBetween(59,60,$hashedPassword));
     }
 
     /**
@@ -95,8 +95,8 @@ class Validation{
      * @return bool, representing whether the supplied salt is valid or not.
      * @author Nikolaj Kæmpe.
      */
-    public function isValidSalt($salt){
-        return ($this->isStringLengthBetween(12,13,$salt));
+    public static function isValidSalt($salt){
+        return (self::isStringLengthBetween(12,13,$salt));
         // TODO ADD ADDITIONAL CHECKS?
     }
 
@@ -106,7 +106,7 @@ class Validation{
      * @return bool, representing whether the supplied IP address is valid or not.
      * @author Nikolaj Kæmpe.
      */
-    public function isValidIP($ipAddress){
+    public static function isValidIP($ipAddress){
         return true;
         //return ($this->isStringLengthBetween(7,20,$ipAddress));
         // TODO ADD ADDITIONAL CHECKS?
@@ -118,17 +118,17 @@ class Validation{
      * @return bool, representing whether the supplied token is valid or not.
      * @author Nikolaj Kæmpe.
      */
-    public function isValidToken($token){
-        return ($this->isStringLengthBetween(127,128,$token));
+    public static function isValidToken($token){
+        return (self::isStringLengthBetween(127,128,$token));
         // TODO ADD ADDITIONAL CHECKS?
     }
 
-    public function isValidTitle($title){
+    public static function isValidTitle($title){
 
         return (!empty($title));
     }
 
-    public function isValidContent($content){
+    public static function isValidContent($content){
         return (!empty($content));
     }
 
@@ -139,7 +139,7 @@ class Validation{
      * @param $input, a string representing the input that is to be tested.
      * @return bool, representing whether the length of the input is between the min and max values.
      */
-    private function isStringLengthBetween($min, $max, $input){
+    private static function isStringLengthBetween($min, $max, $input){
         return !($min > $max || strlen($input) < $min || strlen($input) > $max);
     }
 
@@ -148,7 +148,7 @@ class Validation{
      * @param $input, a string representing the input that is to be tested.
      * @return bool, representing whether the supplied input is valid or not.
      */
-    private function containsLettersAndNumbersOnly($input){
+    private static function containsLettersAndNumbersOnly($input){
         return preg_match("/^[a-zA-Z0-9]+$/",$input)? true: false;
     }
 
@@ -157,7 +157,7 @@ class Validation{
      * @param $input, a string representing the input that is to be tested.
      * @return bool, representing whether the supplied input is valid or not.
      */
-    private function containsNumeric($input){
+    private static function containsNumeric($input){
         return preg_match('/[0-9]+/',$input)? true : false;
     }
 
@@ -166,7 +166,7 @@ class Validation{
      * @param $input, a string representing the input that is to be tested.
      * @return bool, representing whether the supplied input is valid or not.
      */
-    private function containsUpperCase($input){
+    private static function containsUpperCase($input){
         return preg_match('/[A-Z]+/',$input)? true: false;
     }
 
@@ -175,7 +175,7 @@ class Validation{
      * @param $input, a string representing the input that is to be tested.
      * @return bool, representing whether the supplied input is valid or not.
      */
-    public function containsLowerCase($input){
+    public static function containsLowerCase($input){
         return preg_match('/[a-z]+/',$input)? true : false;
     }
 }
