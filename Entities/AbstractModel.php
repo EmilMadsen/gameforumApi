@@ -13,15 +13,18 @@ abstract class AbstractModel
 {
     public function arrayToJson($array)
     {
-        $result = "[";
-        if (!empty($array)){
-            foreach ($array as $item){
-                $result .= json_encode(get_object_vars($item)).', ';
-            }
-            $result = substr($result,0,strlen($result)-2);
-        }
-        $result .= "]";
-        return $result;
+        $json = json_encode($array);
+
+//        $result = "[";
+//        if (!empty($array)){
+//            foreach ($array as $item){
+//                $result .= json_encode(get_object_vars($item)).', ';
+//            }
+//            $result = substr($result,0,strlen($result)-2);
+//        }
+//        $result .= "]";
+
+        return $json;
     }
 
 

@@ -21,6 +21,7 @@ RequestService::enableCORS();
 
 
 switch ($request){
+
     case '/register':
         register($reqBody,$ipAddress);
         break;

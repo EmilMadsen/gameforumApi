@@ -6,7 +6,7 @@
  * Time: 13:38
  */
 
-include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Repositories/PostsRepository.php');
+include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Repositories/GameRepository.php');
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Services/ResponseService.php');
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Logic/Validation.php');
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/AbstractModel.php');
@@ -43,8 +43,9 @@ class Game extends AbstractModel {
      * @param $updatedAt
      * @param $deletedAt
      */
-    public function __construct($id, $title, $description, $releaseDate, $rating, $developerCompanyCode,
-                                $publisherCompanyCode, $pictureFilePath, $createdAt, $updatedAt, $deletedAt)
+    public function __construct($id = null, $title = null, $description = null, $releaseDate = null, $rating = null,
+                                $developerCompanyCode = null, $publisherCompanyCode = null, $pictureFilePath = null,
+                                $createdAt = null, $updatedAt = null, $deletedAt = null)
     {
         $this->id = $id;
         $this->title = $title;

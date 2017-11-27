@@ -18,15 +18,15 @@ $reqBody = file_get_contents('php://input');
 RequestService::enableCORS();
 $ipAddress = RequestService::fetIP();
 
-//RequestService::TokenCheck();
-//$token = RequestService::GetToken();
+RequestService::TokenCheck();
+$token = RequestService::GetToken();
 
 switch ($method)
 {
     case 'GET':
 
-        if(isset($_GET['id'])) return getSpecificGame();
-        else return getGameOverview();
+        if(isset($_GET['id'])) getSpecificGame($token, $_GET['id']);
+        else getGameOverview($token);
 
         break;
 
@@ -50,10 +50,9 @@ switch ($method)
 }
 
 // Get a specific game, along with its posts.
-function getSpecificGame()
+function getSpecificGame($token, $id)
 {
-    return "SPECIFIC";
-
+    ResponseService::ResponseNotFound();
 }
 
 function getGameOverview($token)
