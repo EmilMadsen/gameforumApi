@@ -108,7 +108,7 @@ class GameRepository
     // Get specific game with its posts and info.
     //--------------------------------------------------------------------------
     public function getSpecificGame($authToken, $id)
-//  public function getSpecificGame($authToken, $batch_size=100, $batch=1, $id) TODO:
+//  public function getSpecificGame($authToken, $batch_size=100, $batch=1, $id) TODO: Use batch, and batch_size?
     {
         return [
 
@@ -116,7 +116,7 @@ class GameRepository
                 'id' => 123,
                 'title' => 'Game Title!',
                 'postCount' => 123,
-                'description' => 'Its cool LOOOOOOOOOOOOOOOOOOOONG DESCIRPTION',
+                'description' => 'Its cool LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONG description',
                 'src' => 'Hearthstone-285x380.jpg',
                 'favorite' => true
 
@@ -163,6 +163,18 @@ class GameRepository
 //        }
 //
 //        return $gameArray;
+    }
+
+    public function favoriteSpecificGame($token, $id)
+    {
+        //TODO: Call actual stored procedure..
+        return 'success';
+    }
+
+    public function unfavoriteSpecificGame($token, $id)
+    {
+        //TODO: Call actual stored procedure..
+        return 'success';
     }
 
     // Get DB connection

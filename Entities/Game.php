@@ -83,6 +83,20 @@ class Game extends AbstractModel {
         return $repo->getFrontpage($token);
     }
 
+    public function favoriteSpecificGame($token, $id)
+    {
+        $repo = new GameRepository();
+
+        return $repo->favoriteSpecificGame($token, $id);
+    }
+
+    public function unfavoriteSpecificGame($token, $id)
+    {
+        $repo = new GameRepository();
+
+        return $repo->unfavoriteSpecificGame($token, $id);
+    }
+
 
 //    public function createPost($token){
 //        $this->failOnInvalidModel();

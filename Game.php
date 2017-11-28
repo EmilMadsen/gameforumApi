@@ -13,6 +13,7 @@ include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Repositories/PostsReposito
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/Game.php');
 
 $method = $_SERVER['REQUEST_METHOD'];
+$request = $_SERVER['PATH_INFO'];
 $reqBody = file_get_contents('php://input');
 
 RequestService::enableCORS();
@@ -21,27 +22,32 @@ $ipAddress = RequestService::fetIP();
 RequestService::TokenCheck();
 $token = RequestService::GetToken();
 
-switch ($method)
-{
-    case 'GET':
+//die($request);
+
+
+switch ($request){
+
+    case '/specific':
 
         if(isset($_GET['id'])) getSpecificGame($token, $_GET['id']);
-        else getGameOverview($token);
-
+        else {}// TODO: Handle id not being set..
         break;
 
-    case 'POST':
+    case '/frontpage':
 
-        // Create Game..
-        ResponseService::ResponseNotFound();
-
+        getGameOverview($token);
         break;
 
-    case 'PUT':
+    case '/favorite':
 
-        // Favorite a game..
-        ResponseService::ResponseNotFound();
+        if (isset($_GET['id'])) favoriteSpecificGame($token, $_GET['id']);
+        else {}// TODO: Handle id not being set..
+        break;
 
+    case '/unfavorite':
+
+        if (isset($_GET['id'])) unfavoriteSpecificGame($token, $_GET['id']);
+        else{} // TODO: Handle id not being set..
         break;
 
     default:
@@ -66,6 +72,25 @@ function getGameOverview($token)
     $games = $game->getGameOverview($token);
 
     ResponseService::ResponseJSON($game->arrayToJson($games));
+}
+
+function favoriteSpecificGame($token, $id)
+{
+    $game = new Game();
+
+    $response = $game->favoriteSpecificGame($token, $id);
+
+    ResponseService::ResponseOk($response);
+
+}
+
+function unfavoriteSpecificGame($token, $id)
+{
+    $game = new Game();
+
+    $response = $game->unfavoriteSpecificGame($token, $id);
+
+    ResponseService::ResponseOk($response);
 }
 
 //function getPosts($token,$defaultAmount,$defaultOffset){
