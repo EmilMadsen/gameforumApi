@@ -13,51 +13,74 @@ include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Repositories/PostsReposito
 include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/Post.php');
 
 $method = $_SERVER['REQUEST_METHOD'];
+$request = $_SERVER['PATH_INFO'];
 $reqBody = file_get_contents('php://input');
 
-$POSTS_DEFAULT_AMOUNT = 50;
-$POSTS_DEFAULT_OFFSET = 0;
+//$POSTS_DEFAULT_AMOUNT = 50;
+//$POSTS_DEFAULT_OFFSET = 0;
 
 RequestService::enableCORS();
 $ipAddress = RequestService::fetIP();
 
-//RequestService::TokenCheck();
-//$token = RequestService::GetToken();
+RequestService::TokenCheck();
+$token = RequestService::GetToken();
 
 $postRepository = new PostsRepository();
 
-switch ($method){
-    case 'GET':
-//        die("Posts.... ");
-        getPosts($token,$POSTS_DEFAULT_AMOUNT,$POSTS_DEFAULT_OFFSET);
+switch ($request){
+
+    case '/specific':
+
+        if(isset($_GET['id'])) getSpecificPost($token, $_GET['id']);
+        else {}// TODO: Handle id not being set..
         break;
-    case 'POST':
-        createPost($reqBody,$token);
+
+    case '/create':
+
+        //TODO:
         break;
+
+    case '/upvote':
+
+        // TODO:
+        break;
+
+    case '/downvote':
+
+        // TODO:
+        break;
+
     default:
         ResponseService::ResponseNotFound();
         break;
 }
 
-function getPosts($token,$defaultAmount,$defaultOffset){
-    $postAmount = RequestService::isNumericUrlParamDefined('amount') ? $_GET['amount'] : $defaultAmount;
-    $postOffset = RequestService::isNumericUrlParamDefined('offset') ? $_GET['offset'] : $defaultOffset;
-    $userId     = RequestService::isNumericUrlParamDefined('user_id')? $_GET['user_id'] : 0;
+function getSpecificPost($token, $id){
+//    $postAmount = RequestService::isNumericUrlParamDefined('amount') ? $_GET['amount'] : $defaultAmount;
+//    $postOffset = RequestService::isNumericUrlParamDefined('offset') ? $_GET['offset'] : $defaultOffset;
+//    $userId     = RequestService::isNumericUrlParamDefined('user_id')? $_GET['user_id'] : 0;
 
     $post = new Post();
 
-    if ( $userId === 0){
-        $posts = $post->getRecent($token,$postAmount,$postOffset);
-    }else{
-        $posts = $post->getFromUser($token,$userId,$postAmount,$postOffset);
-    }
-    ResponseService::ResponseJSON($post->arrayToJson($posts));
+    $response = $post->getSpecificPost($token, $id);
+
+    ResponseService::ResponseJSON($post->arrayToJson($response));
 }
 
 function createPost($input,$token){
-    $post = new Post();
-    $post->constructFromHashMap($input);
-    $post->createPost($token); // TODO
-    ResponseService::ResponseJSON($post->idToJson());
+//    $post = new Post();
+//    $post->constructFromHashMap($input);
+//    $post->createPost($token); // TODO
+//    ResponseService::ResponseJSON($post->idToJson());
+}
+
+function upvote($token, $id)
+{
+
+}
+
+function downvote($token, $id)
+{
+
 }
 

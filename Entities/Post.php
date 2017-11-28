@@ -44,39 +44,21 @@ class Post extends AbstractModel {
         $this->deletedAt = $deletedAt;
     }
 
+
+    public function getSpecificPost($token, $id)
+    {
+        return (new PostsRepository())->getSpecificPost($token, $id);
+    }
+
     public function createPost($token){
-        $this->failOnInvalidModel($this->title, $this->content);
-        $validation = new Validation();
-        $procedures = new PostsRepository();
-        $this->title = SanitizeService::SanitizeString($this->title);
-        $this->content = SanitizeService::SanitizeString($this->content);
-        if (!$validation->isValidToken($token)) ResponseService::ResponseBadRequest("Invalid Request-Body");
-        $this->id = $procedures->createPost($token,$this->title,$this->content);
+//        $this->failOnInvalidModel($this->title, $this->content);
+//        $validation = new Validation();
+//        $procedures = new PostsRepository();
+//        $this->title = SanitizeService::SanitizeString($this->title);
+//        $this->content = SanitizeService::SanitizeString($this->content);
+//        if (!$validation->isValidToken($token)) ResponseService::ResponseBadRequest("Invalid Request-Body");
+//        $this->id = $procedures->createPost($token,$this->title,$this->content);
     }
 
-    public function getRecent($token,$amount,$offset){
-        $validation = new Validation();
-        $procedures = new PostsRepository();
-
-        if (!$validation->isValidToken($token) ||
-        !is_numeric($amount) ||
-        !is_numeric($offset)) {
-            ResponseService::ResponseBadRequest("Invalid Request-Body");
-        }
-
-        return $procedures->getPosts($token,$amount,$offset);
-    }
-
-    public function getFromUser($token,$userId,$amount,$offset){
-        $validation = new Validation();
-        $procedures = new PostsRepository();
-        if (!$validation->isValidToken($token) ||
-            !is_numeric($userId) ||
-            !is_numeric($amount) ||
-            !is_numeric($offset)){
-            ResponseService::ResponseBadRequest("Invalid Request-Body");
-        }
-        return $procedures->getPostsByUser($token,$userId,$amount,$offset);
-    }
 
 }

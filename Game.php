@@ -22,9 +22,6 @@ $ipAddress = RequestService::fetIP();
 RequestService::TokenCheck();
 $token = RequestService::GetToken();
 
-//die($request);
-
-
 switch ($request){
 
     case '/specific':
@@ -55,31 +52,24 @@ switch ($request){
         break;
 }
 
-// Get a specific game, along with its posts.
 function getSpecificGame($token, $id)
 {
     $game = new Game();
-
     $specificGame = $game->getSpecificGame($token, $id);
-
     ResponseService::ResponseJSON($game->arrayToJson($specificGame));
 }
 
 function getGameOverview($token)
 {
     $game = new Game();
-
     $games = $game->getGameOverview($token);
-
     ResponseService::ResponseJSON($game->arrayToJson($games));
 }
 
 function favoriteSpecificGame($token, $id)
 {
     $game = new Game();
-
     $response = $game->favoriteSpecificGame($token, $id);
-
     ResponseService::ResponseOk($response);
 
 }
@@ -87,31 +77,10 @@ function favoriteSpecificGame($token, $id)
 function unfavoriteSpecificGame($token, $id)
 {
     $game = new Game();
-
     $response = $game->unfavoriteSpecificGame($token, $id);
-
     ResponseService::ResponseOk($response);
 }
 
-//function getPosts($token,$defaultAmount,$defaultOffset){
-//    $postAmount = RequestService::isNumericUrlParamDefined('amount') ? $_GET['amount'] : $defaultAmount;
-//    $postOffset = RequestService::isNumericUrlParamDefined('offset') ? $_GET['offset'] : $defaultOffset;
-//    $userId     = RequestService::isNumericUrlParamDefined('user_id')? $_GET['user_id'] : 0;
-//
-//    $post = new Post();
-//
-//    if ( $userId === 0){
-//        $posts = $post->getRecent($token,$postAmount,$postOffset);
-//    }else{
-//        $posts = $post->getFromUser($token,$userId,$postAmount,$postOffset);
-//    }
-//    ResponseService::ResponseJSON($post->arrayToJson($posts));
-//}
-//
-//function createPost($input,$token){
-//    $post = new Post();
-//    $post->constructFromHashMap($input);
-//    $post->createPost($token); // TODO
-//    ResponseService::ResponseJSON($post->idToJson());
-//}
+
+
 

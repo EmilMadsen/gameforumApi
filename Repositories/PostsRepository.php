@@ -10,99 +10,126 @@ include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/Post.php');
 class PostsRepository{
 
 
-    //--------------------------------------------------------------------------
+    public function getSpecificPost($token, $id)
+    {
 
-    public function getPosts($authToken, $amount, $offset){
-        var_dump($amount,$offset);
+        return [
+            'post' => [
+                'id' => 1,
+                'title' => 'Post Title!',
+                'commentCount' => 123,
+                'description' => 'Post Description. It is good...',
+                'rating' => 54
 
-        $postsArray = array();
+            ],
+            'comments' => [
+                '0' => [
+                    'id' => 22,
+                    'description' => 'First comment!',
+                    'rating' => 553
 
-        try{
-            $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL game_forum.post_get_recent(:auth_token ,:amount, :off_set)");//, @result)");
-            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
-            $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
-            $stmt->bindParam('off_set', $offset, PDO::PARAM_INT);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if(!empty($result)){
-                $postsArray = makePostsFromResultSet($result);
-            }
-        }
-        catch (PDOException $e){
-            if ($e->getCode() == 45000) {
-                ResponseService::ResponseBadRequest($e->errorInfo[2]);
-            }else{
-                ResponseService::ResponseInternalError();
-            }
-        }
-        catch (Exception $e){
-            ResponseService::ResponseInternalError();
-        }
-
-        return $postsArray;
-
+                ],
+                '1' => [
+                    'id' => 33,
+                    'description' => 'This is a comment..',
+                    'rating' => 554
+                ]
+            ]
+        ];
     }
 
-    //--------------------------------------------------------------------------
-    public function getPostsByUser($authToken, $user_id, $amount, $offset){
-        
-        $postsArray = array();
+//    //--------------------------------------------------------------------------
+//    public function getPosts($authToken, $amount, $offset){
+//        var_dump($amount,$offset);
+//
+//        $postsArray = array();
+//
+//        try{
+//            $connection = $this->getDatabaseConnection();
+//            $stmt = $connection->prepare("CALL game_forum.post_get_recent(:auth_token ,:amount, :off_set)");//, @result)");
+//            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
+//            $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
+//            $stmt->bindParam('off_set', $offset, PDO::PARAM_INT);
+//            $stmt->execute();
+//            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//
+//            if(!empty($result)){
+//                $postsArray = makePostsFromResultSet($result);
+//            }
+//        }
+//        catch (PDOException $e){
+//            if ($e->getCode() == 45000) {
+//                ResponseService::ResponseBadRequest($e->errorInfo[2]);
+//            }else{
+//                ResponseService::ResponseInternalError();
+//            }
+//        }
+//        catch (Exception $e){
+//            ResponseService::ResponseInternalError();
+//        }
+//
+//        return $postsArray;
+//
+//    }
 
-        try{
-            $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL game_forum.post_get_from_wall(:auth_token ,:user_id, :amount, :off_set)");// ,@result)");
-            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
-            $stmt->bindParam('user_id', $user_id, PDO::PARAM_INT);
-            $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
-            $stmt->bindParam('off_set', $offset, PDO::PARAM_INT);
-            $stmt->execute();
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if(!empty($result)){
-                $postsArray = makePostsFromResultSet($result);
-            }
-        }
-        catch (PDOException $e){
-            if ($e->getCode() == 45000) {
-                ResponseService::ResponseBadRequest($e->errorInfo[2]);
-            }else{
-                ResponseService::ResponseInternalError();
-            }
-        }
-        catch (Exception $e){
-            ResponseService::ResponseInternalError();
-        }
-
-        return $postsArray;
-        
-    }
+//    //--------------------------------------------------------------------------
+//    public function getPostsByUser($authToken, $user_id, $amount, $offset){
+//
+//        $postsArray = array();
+//
+//        try{
+//            $connection = $this->getDatabaseConnection();
+//            $stmt = $connection->prepare("CALL game_forum.post_get_from_wall(:auth_token ,:user_id, :amount, :off_set)");// ,@result)");
+//            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
+//            $stmt->bindParam('user_id', $user_id, PDO::PARAM_INT);
+//            $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
+//            $stmt->bindParam('off_set', $offset, PDO::PARAM_INT);
+//            $stmt->execute();
+//            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//
+//            if(!empty($result)){
+//                $postsArray = makePostsFromResultSet($result);
+//            }
+//        }
+//        catch (PDOException $e){
+//            if ($e->getCode() == 45000) {
+//                ResponseService::ResponseBadRequest($e->errorInfo[2]);
+//            }else{
+//                ResponseService::ResponseInternalError();
+//            }
+//        }
+//        catch (Exception $e){
+//            ResponseService::ResponseInternalError();
+//        }
+//
+//        return $postsArray;
+//
+//    }
     
     //--------------------------------------------------------------------------
     public function createPost($authToken, $title, $content){
-        $id = 0;
-        try{
-            $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL game_forum.post_create(:auth_token ,:title, :content)");
-            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
-            $stmt->bindParam('title', $title, PDO::PARAM_STR);
-            $stmt->bindParam('content', $content, PDO::PARAM_STR);
-            $stmt->execute();
-            $id = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-        catch (PDOException $e){
-            if ($e->getCode() == 45000) {
-                ResponseService::ResponseBadRequest($e->errorInfo[2]);
-            }
-            else{
-                ResponseService::ResponseInternalError();
-            }
-        }
-        catch (Exception $e){
-            ResponseService::ResponseInternalError();
-        }
-        return $id;
+//        $id = 0;
+//        try{
+//            $connection = $this->getDatabaseConnection();
+//            $stmt = $connection->prepare("CALL game_forum.post_create(:auth_token ,:title, :content)");
+//            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
+//            $stmt->bindParam('title', $title, PDO::PARAM_STR);
+//            $stmt->bindParam('content', $content, PDO::PARAM_STR);
+//            $stmt->execute();
+//            $id = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//        }
+//        catch (PDOException $e){
+//            if ($e->getCode() == 45000) {
+//                ResponseService::ResponseBadRequest($e->errorInfo[2]);
+//            }
+//            else{
+//                ResponseService::ResponseInternalError();
+//            }
+//        }
+//        catch (Exception $e){
+//            ResponseService::ResponseInternalError();
+//        }
+//        return $id;
     }
 
     //--------------------------------------------------------------------------
@@ -110,6 +137,7 @@ class PostsRepository{
     private function getDatabaseConnection(){
         return DatabaseConnection::getConnection();
     }
+
 }
 
 
