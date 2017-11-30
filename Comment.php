@@ -19,102 +19,47 @@ include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/Comment.php');
             Service response to client with Not Authorized 401
             AND the below functions will not be executed
 */
+
+RequestService::enableCORS();
+
 //------------------------------------------------------------------------------
 
 RequestService::TokenCheck();
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-
-
-/*
- *
-    The Below Code will be Executed ONLY IF REQUEST CONTAINS A VALID TOKEN
-*/
-
 // Get token value from REQUEST
 $token = RequestService::GetToken();
 
-// CREATE CommentsRepository
-$requestHttpMethod = $_SERVER['REQUEST_METHOD'];
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+$request = $_SERVER['PATH_INFO'];
 
 
 // HANDLE REQUEST
-switch ($requestHttpMethod){
+switch ($request){
 
-    //--------------------------------------------------------------------------
-    // GET COMMENTS
-    //--------------------------------------------------------------------------
-    case 'GET':
-        //RequestService::validateNumericUrlParam('post_id');
-        //$post_id = $_GET['post_id'];
-/*++*/  $post_id = RequestService::isNumericUrlParamDefined('post_id')? $_GET['post_id'] : ResponseService::ResponseBadRequest("Invalid Post");
-        $amount = RequestService::isNumericUrlParamDefined('amount') ? $_GET['amount'] : 25;
-        $offset = RequestService::isNumericUrlParamDefined('offset') ? $_GET['offset'] : 0;
+    case '/create':
+        // TODO...
+        echo 'This is not implemented..';
+        break;
 
-/*++*/  $comment = new Comment();
-/*++*/  $comments = $comment->getCommentsFromPost($token, $post_id, $amount, $offset);
-/*++*/  ResponseService::ResponseJSON($comment->arrayToJson($comments));
-        //$comments = $commentsRepository->getCommentsOfPost($token, $post_id, $amount, $offset);
-        //ResponseService::ResponseJSON($comments);
-    // END OF GET COMMENTS      
-    break;
+    case 'upvote':
+        // TODO...
+        break;
 
-    //--------------------------------------------------------------------------
-    // POST COMMENTS
-    //--------------------------------------------------------------------------
-    case 'POST':
-    $sRequestBody = file_get_contents('php://input');
-    createComment($token,$sRequestBody);
+    case 'downvote':
+        //TODO:..
+        break;
 
-/*
-    // Convert JSON to PHP object
-    $jRequestBody = RequestService::ParseRequestBody($sRequestBody);
-
-     // IF BAD JSON
-    if($jRequestBody === 'corrupted'){
-        ResponseService::ResponseBadRequest("Bad Request");
-    }
-
-    // Check if RequestBody Contains required data
-    $Validation  = new Validation();
-
-    $isValidData = $Validation->hasAllProperties(
-        $jRequestBody, Comment::getRequiredProperties()
-    );
-
-    // If RequestBody Doesn't contain required fields
-    if(!$isValidData){
-        ResponseService::ResponseBadRequest("Bad Request");
-    }
-
-    // SANITIZE Post Properties
-    $sanizedRequestBody = SanitizeService::SanitizeObjectsProperties(
-        $jRequestBody, Comment::getRequiredProperties());
-
-    $newCommentId = $commentsRepository->createComment(
-        $token,
-        $sanizedRequestBody->$post_id,
-        $sanizedRequestBody->$content
-    );
-
-    if(isset($newPostId)){
-        ResponseService::ResponseCreated("Comment Successfully Created");
-    }else{
-        ResponseService::ResponseInternalError("Internal Server Error");
-    }
-*/
-    // END OF POST COMMENTS 
-    break;
+    default:
+        ResponseService::ResponseNotFound();
+        break;
 }
 
 // ++ //
-function createComment($token, $input){
-    $comment = new Comment();
-    $comment->constructFromHashMap($input);
-    $comment->createComment($token);
-    ResponseService::ResponseJSON($comment->idToJson());
-
-}
-
-?>
+//function createComment($token, $input){
+//    $comment = new Comment();
+//    $comment->constructFromHashMap($input);
+//    $comment->createComment($token);
+//    ResponseService::ResponseJSON($comment->idToJson());
+//
+//}
