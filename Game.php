@@ -47,6 +47,26 @@ switch ($request){
         else{} // TODO: Handle id not being set..
         break;
 
+
+    case '/general':
+        //TODO: ...
+        break;
+    case '/random':
+        //TODO: ...
+        break;
+    case '/news':
+        //TODO: ...
+        break;
+    case '/hot':
+        //TODO: ...
+        break;
+    case '/rising':
+        //TODO: ...
+        break;
+    case '/topvoted':
+        //TODO: ...
+        break;
+
     default:
         ResponseService::ResponseNotFound();
         break;

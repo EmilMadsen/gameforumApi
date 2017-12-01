@@ -36,7 +36,8 @@ switch ($request){
         break;
     case '/profile':
         // TODO: Get a profile using auth token..
-        $response = [ 'user' => [
+        $response =
+            [ 'user' => [
             'username' => 'Usertestbobwut',
             'created_at' => '2017/11/12',
             'total_post_votes' => '255',

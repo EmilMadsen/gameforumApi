@@ -32,7 +32,7 @@ switch ($request){
     case '/specific':
 
         if(isset($_GET['id'])) getSpecificPost($token, $_GET['id']);
-    else {}// TODO: Handle id not being set..
+        else {}// TODO: Handle id not being set..
         break;
 
     case '/create':
@@ -46,6 +46,16 @@ switch ($request){
         break;
 
     case '/downvote':
+
+        // TODO:
+        break;
+
+    case '/favorite':
+
+        // TODO:
+        break;
+
+    case '/unfavorite':
 
         // TODO:
         break;
