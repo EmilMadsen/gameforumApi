@@ -16,9 +16,6 @@ $method = $_SERVER['REQUEST_METHOD'];
 $request = $_SERVER['PATH_INFO'];
 $reqBody = file_get_contents('php://input');
 
-//$POSTS_DEFAULT_AMOUNT = 50;
-//$POSTS_DEFAULT_OFFSET = 0;
-
 RequestService::enableCORS();
 $ipAddress = RequestService::fetIP();
 
