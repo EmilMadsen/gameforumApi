@@ -121,4 +121,76 @@ class AuthProcedures{
     private function getDatabaseConnection(){
         return DatabaseConnection::getConnection();
     }
+
+    public function getUserProfile($token)
+    {
+        $profile = [];
+        $batch_size = 50;
+        $off_set = 0;
+
+        // Get basic user details..
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.user_profile_get_from_user(:auth_token)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {ResponseService::ResponseInternalError();}
+
+        // Get favorite games for that user
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.game_get_favorite_from_user(:auth_token, :batch_size, :off_set)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
+            $stmt->bindParam('off_set', $off_set, PDO::PARAM_INT);
+            $stmt->execute();
+            $favorite_games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+
+        // Get favorite posts for that user
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.post_get_favorite_from_user(:auth_token, :batch_size, :off_set)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
+            $stmt->bindParam('off_set', $off_set, PDO::PARAM_INT);
+            $stmt->execute();
+            $favorite_posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {ResponseService::ResponseInternalError();}
+
+        // Get comments for that user
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.comment_get_from_user(:auth_token, :batch_size, :off_set)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
+            $stmt->bindParam('off_set', $off_set, PDO::PARAM_INT);
+            $stmt->execute();
+            $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {ResponseService::ResponseInternalError();}
+
+        $profile['user'] = $result[0];
+        $profile['user']['favorite_games'] = $favorite_games;
+        $profile['user']['favorite_posts'] = $favorite_posts;
+        $profile['user']['comments'] = $comments;
+
+        return $profile;
+    }
 }

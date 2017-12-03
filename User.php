@@ -16,6 +16,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 $request = $_SERVER['PATH_INFO'];
 $reqBody = file_get_contents('php://input');
 $ipAddress = RequestService::fetIP();
+
 RequestService::enableCORS();
 
 
@@ -35,30 +36,9 @@ switch ($request){
         ResponseService::ResponseNotImplemented();
         break;
     case '/profile':
-        // TODO: Get a profile using auth token..
-        $response =
-            [ 'user' => [
-            'username' => 'Usertestbobwut',
-            'created_at' => '2017/11/12',
-            'total_post_votes' => '255',
-            'total_comments_votes' => '255',
-            'favorite_games' => [
-                '0' => [
-                    'id' => 123,
-                    'title' => 'Game Title!',
-                    'postCount' => 123,
-                    'description' => 'Its cool LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONG description',
-                    'game_company' => 'test company',
-                    'src' => 'Hearthstone-285x380.jpg',
-                    'favorite' => true
-                ],
-            ],
-            'favorite_game_companies' => [],
-            'posts' => [],
-            'comments' => [],
 
-        ]];
-        ResponseService::ResponseJSON(json_encode($response));
+        $token = RequestService::GetToken();
+        getUserProfile($token);
         break;
     default:
         ResponseService::ResponseNotFound();
@@ -79,4 +59,10 @@ function tryLogin($input, $ip){
     ResponseService::ResponseJSON($authToken->toJson());
 }
 
-?>
+function getUserProfile($token)
+{
+    $user = new User();
+    $response = $user->getUserProfile($token);
+    ResponseService::ResponseJSON($user->arrayToJson($response));
+}
+

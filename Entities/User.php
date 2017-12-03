@@ -179,4 +179,15 @@ class User{
         }
     }
 
+    public function arrayToJson($array)
+    {
+        return json_encode($array);
+    }
+
+
+    public function getUserProfile($token)
+    {
+        return (new AuthProcedures())->getUserProfile($token);
+    }
+
 }
