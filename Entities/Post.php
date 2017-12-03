@@ -60,5 +60,15 @@ class Post extends AbstractModel {
 //        $this->id = $procedures->createPost($token,$this->title,$this->content);
     }
 
+    public function getNewest($token)
+    {
+        return (new PostsRepository())->getNewest($token);
+    }
+
+    public function getTopVoted($token)
+    {
+        return (new PostsRepository())->getTopVoted($token);
+    }
+
 
 }

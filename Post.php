@@ -57,13 +57,23 @@ switch ($request){
         // TODO:
         break;
 
+    case '/newest':
+
+        getNewest($token);
+        break;
+
+    case '/topvoted':
+
+        getTopVoted($token);
+        break;
+
     default:
         ResponseService::ResponseNotFound();
         break;
 }
 
-function getSpecificPost($token, $id){
-
+function getSpecificPost($token, $id)
+{
     $post = new Post();
     $response = $post->getSpecificPost($token, $id);
     ResponseService::ResponseJSON($post->arrayToJson($response));
@@ -84,5 +94,17 @@ function upvote($token, $id)
 function downvote($token, $id)
 {
 
+}
+
+function getNewest($token){
+    $post = new Post();
+    $response = $post->getNewest($token);
+    ResponseService::ResponseJSON($post->arrayToJson($response));
+}
+
+function getTopVoted($token){
+    $post = new Post();
+    $response = $post->getTopVoted($token);
+    ResponseService::ResponseJSON($post->arrayToJson($response));
 }
 
