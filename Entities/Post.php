@@ -70,5 +70,15 @@ class Post extends AbstractModel {
         return (new PostsRepository())->getTopVoted($token);
     }
 
+    public function favoritePost($token, $id)
+    {
+        return (new PostsRepository())->setFavoritePost($token, $id, true);
+    }
+
+    public function unfavoritePost($token, $id)
+    {
+        return (new PostsRepository())->setFavoritePost($token, $id, false);
+    }
+
 
 }

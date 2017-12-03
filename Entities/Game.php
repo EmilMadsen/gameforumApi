@@ -79,12 +79,12 @@ class Game extends AbstractModel {
 
     public function favoriteSpecificGame($token, $id)
     {
-        return (new GameRepository())->favoriteSpecificGame($token, $id);
+        return (new GameRepository())->setFavoriteGame($token, $id, true);
     }
 
     public function unfavoriteSpecificGame($token, $id)
     {
-        return (new GameRepository())->unfavoriteSpecificGame($token, $id);
+        return (new GameRepository())->setFavoriteGame($token, $id, false);
     }
 
 }

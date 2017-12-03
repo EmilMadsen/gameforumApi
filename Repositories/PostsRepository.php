@@ -115,8 +115,28 @@ class PostsRepository{
         return $result;
     }
 
+    public function setFavoritePost($token, $id, $bool)
+    {
+        // Set favorite bool on a game.
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.post_set_favorite(:auth_token, :post_id, :favorite_bool)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('post_id', $id, PDO::PARAM_INT);
+            $stmt->bindParam('favorite_bool', $bool, PDO::PARAM_BOOL);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+
+        return $result;
+    }
     //--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
+
     private function getDatabaseConnection(){
         return DatabaseConnection::getConnection();
     }

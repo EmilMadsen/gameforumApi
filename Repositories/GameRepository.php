@@ -89,17 +89,26 @@ class GameRepository
         return $gameArray;
     }
 
-    public function favoriteSpecificGame($token, $id)
+    public function setFavoriteGame($token, $id, $bool)
     {
-        //TODO: Call actual stored procedure..
-        return 'success';
+        // Set favorite bool on a game.
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.game_set_favorite(:auth_token, :game_id, :favorite_bool)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('game_id', $id, PDO::PARAM_INT);
+            $stmt->bindParam('favorite_bool', $bool, PDO::PARAM_BOOL);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+
+        return $result;
     }
 
-    public function unfavoriteSpecificGame($token, $id)
-    {
-        //TODO: Call actual stored procedure..
-        return 'success';
-    }
 
     // Get DB connection
     //--------------------------------------------------------------------------

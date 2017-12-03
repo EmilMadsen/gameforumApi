@@ -49,12 +49,14 @@ switch ($request){
 
     case '/favorite':
 
-        // TODO:
+        if(isset($_GET['id'])) favoritePost($token, $_GET['id']);
+        else {}// TODO: Handle id not being set..
         break;
 
     case '/unfavorite':
 
-        // TODO:
+        if(isset($_GET['id'])) unfavoritePost($token, $_GET['id']);
+        else {}// TODO: Handle id not being set..
         break;
 
     case '/newest':
@@ -94,6 +96,20 @@ function upvote($token, $id)
 function downvote($token, $id)
 {
 
+}
+
+function favoritePost($token, $id)
+{
+    $post = new Post();
+    $response = $post->favoritePost($token, $id);
+    ResponseService::ResponseJSON($post->arrayToJson($response));
+}
+
+function unfavoritePost($token, $id)
+{
+    $post = new Post();
+    $response = $post->unfavoritePost($token, $id);
+    ResponseService::ResponseJSON($post->arrayToJson($response));
 }
 
 function getNewest($token){

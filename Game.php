@@ -90,7 +90,7 @@ function favoriteSpecificGame($token, $id)
 {
     $game = new Game();
     $response = $game->favoriteSpecificGame($token, $id);
-    ResponseService::ResponseOk($response);
+    ResponseService::ResponseJSON($game->arrayToJson($response));
 
 }
 
@@ -98,7 +98,7 @@ function unfavoriteSpecificGame($token, $id)
 {
     $game = new Game();
     $response = $game->unfavoriteSpecificGame($token, $id);
-    ResponseService::ResponseOk($response);
+    ResponseService::ResponseJSON($game->arrayToJson($response));
 }
 
 
