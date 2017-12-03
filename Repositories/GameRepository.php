@@ -8,161 +8,85 @@ include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/Game.php');
 
 class GameRepository
 {
-    // Get games for frontpage
+    // GAME_GET_ALL
     //--------------------------------------------------------------------------
-    public function getFrontpage($authToken, $batch_size = 50, $batch = 1)
+    public function getFrontpage($authToken, $batch_size = 50, $off_set = 0)
     {
-        return [
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.game_get_all(:auth_token ,:batch_size, :off_set)");
+            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR);
+            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
+            $stmt->bindParam('off_set', $off_set, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            'standard' => [
-                '0' => [
-                    'id' => 123,
-                    'title' => 'General',
-                    'postCount' => 123,
-                    'description' => 'Its cool',
-                    'src' => 'general.jpg'
-                ],
-                '1' => [
-                    'id' => 123,
-                    'title' => 'Random',
-                    'postCount' => 123,
-                    'description' => 'Its cool',
-                    'src' => 'random.jpg'
-                ],
-                '2' => [
-                    'id' => 123,
-                    'title' => 'News',
-                    'postCount' => 123,
-                    'description' => 'Its cool',
-                    'src' => 'news.jpg'
-                ],
-                '3' => [
-                    'id' => 123,
-                    'title' => 'Hot',
-                    'postCount' => 123,
-                    'description' => 'Its cool',
-                    'src' => 'hot.jpg'
-                ],
-                '4' => [
-                    'id' => 123,
-                    'title' => 'Rising',
-                    'postCount' => 123,
-                    'description' => 'Its cool',
-                    'src' => 'rising.jpg'
-                ],
-                '5' => [
-                    'id' => 123,
-                    'title' => 'Top Voted',
-                    'postCount' => 123,
-                    'description' => 'Its cool',
-                    'src' => 'topvoted.jpg'
-                ]
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {
+                die($e);
+                ResponseService::ResponseBadRequest($e->errorInfo[2]);
+            } else {
+                die($e);
+                ResponseService::ResponseInternalError();
+            }
+        } catch (Exception $e) {
+            die($e);
+            ResponseService::ResponseInternalError();
+        }
 
-            ],
-            'games' => [
-                '0' => [
-                    'id' => 321,
-                    'title' => 'game titlez',
-                    'postCount' => 123,
-                    'description' => 'Its cool',
-                    'src' => 'Hearthstone-285x380.jpg'
-
-                ],
-                '1' => [
-                    'id' => 321,
-                    'title' => 'game titlez',
-                    'postCount' => 123,
-                    'description' => 'Its cool',
-//                    'src' => 'Hearthstone-285x380.jpg'
-                ]
-            ]
-        ];
-
-//        $gameArray = [];
-//
-//        try {
-//            $connection = $this->getDatabaseConnection();
-//            $stmt = $connection->prepare("CALL game_forum.games_get_frontpage(:auth_token ,:batch_size, :batch)");
-//            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR);
-//            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
-//            $stmt->bindParam('batch', $batch, PDO::PARAM_INT);
-//            $stmt->execute();
-//            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//
-//            if (!empty($result)) {
-//                $gameArray = $this->makeGamesFromResultSet($result);
-//            }
-//        } catch (PDOException $e) {
-//            if ($e->getCode() == 45000) {
-//                ResponseService::ResponseBadRequest($e->errorInfo[2]);
-//            } else {
-//                ResponseService::ResponseInternalError();
-//            }
-//        } catch (Exception $e) {
-//            ResponseService::ResponseInternalError();
-//        }
-//
-//        return $gameArray;
+        return $result;
     }
 
-    // Get specific game with its posts and info.
+    // GAME_GET_FROM_ID && POST_GET_FROM_GAME
     //--------------------------------------------------------------------------
-    public function getSpecificGame($authToken, $id)
-//  public function getSpecificGame($authToken, $batch_size=100, $batch=1, $id) TODO: Use batch, and batch_size?
+  public function getSpecificGame($authToken, $id, $batch_size=100, $off_set=0)
     {
-        return [
+        $gameArray = [];
 
-            'game' => [
-                'id' => 123,
-                'title' => 'Game Title!',
-                'postCount' => 123,
-                'description' => 'Its cool LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOONG description',
-                'src' => 'Hearthstone-285x380.jpg',
-                'favorite' => true
+        // Get game details..
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.game_get_from_id(:auth_token, :id)");
+            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR);
+            $stmt->bindParam('id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            ],
-            'posts' => [
-                '0' => [
-                    'id' => 321,
-                    'title' => 'game titlez',
-                    'commentCount' => 123,
-                    'description' => 'Its cool',
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {
+                ResponseService::ResponseBadRequest($e->errorInfo[2]);
+            } else {
+                ResponseService::ResponseInternalError();
+            }
+        } catch (Exception $e) {
+            ResponseService::ResponseInternalError();
+        }
 
-                ],
-                '1' => [
-                    'id' => 321,
-                    'title' => 'game titlez',
-                    'commentCount' => 123,
-                    'description' => 'Its cool',
-                ]
-            ]
-        ];
-//        $gameArray = [];
-//
-//        try {
-//            $connection = $this->getDatabaseConnection();
-//            $stmt = $connection->prepare("CALL game_forum.games_get_specific(:auth_token ,:batch_size, :batch, :id)");
-//            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR);
-//            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
-//            $stmt->bindParam('batch', $batch, PDO::PARAM_INT);
-//            $stmt->bindParam('id', $id, PDO::PARAM_INT);
-//            $stmt->execute();
-//            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//
-//            if (!empty($result)) {
-//                $gameArray = $this->makeGamesFromResultSet($result);
-//            }
-//        } catch (PDOException $e) {
-//            if ($e->getCode() == 45000) {
-//                ResponseService::ResponseBadRequest($e->errorInfo[2]);
-//            } else {
-//                ResponseService::ResponseInternalError();
-//            }
-//        } catch (Exception $e) {
-//            ResponseService::ResponseInternalError();
-//        }
-//
-//        return $gameArray;
+        // Get posts for that game
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.post_get_from_game(:auth_token, :game_id ,:batch_size, :off_set)");
+            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR);
+            $stmt->bindParam('game_id', $id, PDO::PARAM_INT);
+            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
+            $stmt->bindParam('off_set', $off_set, PDO::PARAM_INT);
+            $stmt->execute();
+            $postsResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {
+                ResponseService::ResponseBadRequest($e->errorInfo[2]);
+            } else {
+                ResponseService::ResponseInternalError();
+            }
+        } catch (Exception $e) {
+            ResponseService::ResponseInternalError();
+        }
+
+        $gameArray['game'] = $result[0];
+        $gameArray['posts'] = $postsResult;
+
+        return $gameArray;
     }
 
     public function favoriteSpecificGame($token, $id)
@@ -183,31 +107,31 @@ class GameRepository
         return DatabaseConnection::getConnection();
     }
 
-    // Transform resultset into array of games.
-    //--------------------------------------------------------------------------
-    private function makeGamesFromResultSet($result){
-
-        $gamesArray = [];
-
-        foreach (@$result as $row){
-
-            //TODO correct the column names with the ones we're going to make on DB.
-            $game = new Game(
-                $row['id'],
-                $row['title'],
-                $row['description'],
-                $row['releaseDate'],
-                $row['rating'],
-                $row['developerCompanyCode'],
-                $row['publisherCompanyCode'],
-                $row['pictureFilePath'],
-                $row['created_timestamp'],
-                $row['updated_timestamp'],
-                $row['deleted_timestamp']
-            );
-            array_push($gamesArray, $game);
-        }
-
-        return $gamesArray;
-    }
+//    // Transform resultset into array of games.
+//    //--------------------------------------------------------------------------
+//    private function makeGamesFromResultSet($result){
+//
+//        $gamesArray = [];
+//
+//        foreach (@$result as $row){
+//
+//            //TODO correct the column names with the ones we're going to make on DB.
+//            $game = new Game(
+//                $row['id'],
+//                $row['title'],
+//                $row['description'],
+//                $row['releaseDate'],
+//                $row['rating'],
+//                $row['developerCompanyCode'],
+//                $row['publisherCompanyCode'],
+//                $row['pictureFilePath'],
+//                $row['created_timestamp'],
+//                $row['updated_timestamp'],
+//                $row['deleted_timestamp']
+//            );
+//            array_push($gamesArray, $game);
+//        }
+//
+//        return $gamesArray;
+//    }
 }

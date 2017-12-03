@@ -63,14 +63,9 @@ switch ($request){
 }
 
 function getSpecificPost($token, $id){
-//    $postAmount = RequestService::isNumericUrlParamDefined('amount') ? $_GET['amount'] : $defaultAmount;
-//    $postOffset = RequestService::isNumericUrlParamDefined('offset') ? $_GET['offset'] : $defaultOffset;
-//    $userId     = RequestService::isNumericUrlParamDefined('user_id')? $_GET['user_id'] : 0;
 
     $post = new Post();
-
     $response = $post->getSpecificPost($token, $id);
-
     ResponseService::ResponseJSON($post->arrayToJson($response));
 }
 

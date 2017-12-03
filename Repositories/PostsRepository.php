@@ -10,101 +10,61 @@ include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/Post.php');
 class PostsRepository{
 
 
-    public function getSpecificPost($token, $id)
+    // POST_GET_FROM_ID && COMMENT_GET_FROM_POST
+    //--------------------------------------------------------------------------
+    public function getSpecificPost($token, $id, $batch_size = 50, $off_set = 0)
     {
+//    public function getPosts($authToken, $amount, $offset){
+//
+        $postsArray = [];
 
-        return [
-            'post' => [
-                'id' => 1,
-                'title' => 'Post Title!',
-                'commentCount' => 123,
-                'description' => 'Post Description. It is good...',
-                'rating' => 54
+        // Get post details..
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.post_get_from_id(:auth_token, :id)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('id', $id, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            ],
-            'comments' => [
-                '0' => [
-                    'id' => 22,
-                    'description' => 'First comment!',
-                    'rating' => 553
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {
+                ResponseService::ResponseBadRequest($e->errorInfo[2]);
+            } else {
+                ResponseService::ResponseInternalError();
+            }
+        } catch (Exception $e) {
+            ResponseService::ResponseInternalError();
+        }
 
-                ],
-                '1' => [
-                    'id' => 33,
-                    'description' => 'This is a comment..',
-                    'rating' => 554
-                ]
-            ]
-        ];
+        // Get comments for that post
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.comment_get_from_post(:auth_token, :post_id ,:batch_size, :off_set)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('post_id', $id, PDO::PARAM_INT);
+            $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
+            $stmt->bindParam('off_set', $off_set, PDO::PARAM_INT);
+            $stmt->execute();
+            $postsResult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {
+                ResponseService::ResponseBadRequest($e->errorInfo[2]);
+            } else {
+                ResponseService::ResponseInternalError();
+            }
+        } catch (Exception $e) {
+            ResponseService::ResponseInternalError();
+        }
+
+        $postsArray['post'] = $result[0];
+        $postsArray['comments'] = $postsResult;
+
+        return $postsArray;
+//
     }
 
-//    //--------------------------------------------------------------------------
-//    public function getPosts($authToken, $amount, $offset){
-//        var_dump($amount,$offset);
-//
-//        $postsArray = array();
-//
-//        try{
-//            $connection = $this->getDatabaseConnection();
-//            $stmt = $connection->prepare("CALL game_forum.post_get_recent(:auth_token ,:amount, :off_set)");//, @result)");
-//            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
-//            $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
-//            $stmt->bindParam('off_set', $offset, PDO::PARAM_INT);
-//            $stmt->execute();
-//            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//
-//            if(!empty($result)){
-//                $postsArray = makePostsFromResultSet($result);
-//            }
-//        }
-//        catch (PDOException $e){
-//            if ($e->getCode() == 45000) {
-//                ResponseService::ResponseBadRequest($e->errorInfo[2]);
-//            }else{
-//                ResponseService::ResponseInternalError();
-//            }
-//        }
-//        catch (Exception $e){
-//            ResponseService::ResponseInternalError();
-//        }
-//
-//        return $postsArray;
-//
-//    }
-
-//    //--------------------------------------------------------------------------
-//    public function getPostsByUser($authToken, $user_id, $amount, $offset){
-//
-//        $postsArray = array();
-//
-//        try{
-//            $connection = $this->getDatabaseConnection();
-//            $stmt = $connection->prepare("CALL game_forum.post_get_from_wall(:auth_token ,:user_id, :amount, :off_set)");// ,@result)");
-//            $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR );
-//            $stmt->bindParam('user_id', $user_id, PDO::PARAM_INT);
-//            $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
-//            $stmt->bindParam('off_set', $offset, PDO::PARAM_INT);
-//            $stmt->execute();
-//            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//
-//            if(!empty($result)){
-//                $postsArray = makePostsFromResultSet($result);
-//            }
-//        }
-//        catch (PDOException $e){
-//            if ($e->getCode() == 45000) {
-//                ResponseService::ResponseBadRequest($e->errorInfo[2]);
-//            }else{
-//                ResponseService::ResponseInternalError();
-//            }
-//        }
-//        catch (Exception $e){
-//            ResponseService::ResponseInternalError();
-//        }
-//
-//        return $postsArray;
-//
-//    }
     
     //--------------------------------------------------------------------------
     public function createPost($authToken, $title, $content){
@@ -141,25 +101,25 @@ class PostsRepository{
 }
 
 
-function makePostsFromResultSet($result){
-
-    $postsArray = [];
-
-     foreach (@$result as $row){
-
-         $post = new Post();
-         $post->construct(
-             $row['id'],
-             $row['user_id'],
-             'Dummy Username',
-             SanitizeService::SanitizeString($row['title']),
-             SanitizeService::SanitizeString($row['content']),
-             $row['created_timestamp'],
-             $row['updated_timestamp'],
-             $row['deleted_timestamp']
-         );
-         array_push($postsArray,$post);
-    }
-
-    return $postsArray;
-}
+//function makePostsFromResultSet($result){
+//
+//    $postsArray = [];
+//
+//     foreach (@$result as $row){
+//
+//         $post = new Post();
+//         $post->construct(
+//             $row['id'],
+//             $row['user_id'],
+//             'Dummy Username',
+//             SanitizeService::SanitizeString($row['title']),
+//             SanitizeService::SanitizeString($row['content']),
+//             $row['created_timestamp'],
+//             $row['updated_timestamp'],
+//             $row['deleted_timestamp']
+//         );
+//         array_push($postsArray,$post);
+//    }
+//
+//    return $postsArray;
+//}
