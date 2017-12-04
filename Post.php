@@ -52,8 +52,7 @@ switch ($request){
 
     case '/unfavorite':
 
-        if(isset($_GET['id'])) unfavoritePost($token, $_GET['id']);
-        else {}// TODO: Handle id not being set..
+        RequestService::isNumericUrlParamDefined('id')? unfavoritePost($token, $_GET['id']) : ResponseService::ResponseBadRequest();
         break;
 
     case '/newest':
@@ -67,7 +66,6 @@ switch ($request){
         break;
 
     default:
-        var_dump($request);
         ResponseService::ResponseNotFound();
         break;
 }
@@ -88,12 +86,12 @@ function createPost($token,$input){
 
 function upVotePost($token, $id)
 {
-    Post::votePost($token,$id,true);
+    Post::VotePost($token,$id,true);
 }
 
 function downVotePost($token, $id)
 {
-    Post::votePost($token,$id,false);
+    Post::VotePost($token,$id,false);
 }
 
 function favoritePost($token, $id)

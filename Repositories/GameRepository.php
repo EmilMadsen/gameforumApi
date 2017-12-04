@@ -89,6 +89,25 @@ class GameRepository
         return $gameArray;
     }
 
+    public static function GetFromTag($token,$tagName,$amount,$offset){
+        try {
+            $connection = DatabaseConnection::getConnection();
+            $stmt = $connection->prepare("CALL game_forum.game_get_from_tag(:auth_token, :tag, :amount, :offset)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('tag', $tagName, PDO::PARAM_STR);
+            $stmt->bindParam('amount', $amount, PDO::PARAM_INT);
+            $stmt->bindParam('offset', $offset, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+
+        return $result;
+    }
+
     public function setFavoriteGame($token, $id, $bool)
     {
         // Set favorite bool on a game.
@@ -107,6 +126,21 @@ class GameRepository
         } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
 
         return $result;
+    }
+
+    static function voteGame($token, $id,$bool){
+        try {
+            $connection = DatabaseConnection::getConnection();
+            $stmt = $connection->prepare("CALL game_forum.game_vote(:auth_token, :game_id, :vote_value)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('game_id', $id, PDO::PARAM_INT);
+            $stmt->bindParam('vote_value', $bool, PDO::PARAM_BOOL);
+            $stmt->execute();
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {ResponseService::ResponseInternalError();}
     }
 
     public function createGame($token,$title,$description,$releaseDate,

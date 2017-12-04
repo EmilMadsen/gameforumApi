@@ -77,6 +77,10 @@ class Game extends AbstractModel {
         return (new GameRepository())->getFrontpage($token);
     }
 
+    public static function GetFromTag($token,$tagName,$amount,$offset){
+        return GameRepository::GetFromTag($token,$tagName,$amount,$offset);
+    }
+
     public function favoriteSpecificGame($token, $id)
     {
         return (new GameRepository())->setFavoriteGame($token, $id, true);
@@ -85,6 +89,10 @@ class Game extends AbstractModel {
     public function unfavoriteSpecificGame($token, $id)
     {
         return (new GameRepository())->setFavoriteGame($token, $id, false);
+    }
+
+    public static function VoteGame($token, $id,$bool){
+        GameRepository::VoteGame($token, $id,$bool);
     }
 
     public function createGame($token){

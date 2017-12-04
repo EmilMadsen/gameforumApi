@@ -60,10 +60,25 @@ switch ($request){
         */
         break;
 
+    case '/upvote':
+        $id = RequestService::isNumericUrlParamDefined('id')? $_GET['id'] : ResponseService::ResponseBadRequest();
+        voteGame($token,$id,true);
+        break;
+
+    case '/downvote':
+        $id = RequestService::isNumericUrlParamDefined('id')? $_GET['id'] : ResponseService::ResponseBadRequest();
+        voteGame($token,$id,false);
+        break;
+
     case '/create':
         createGame($token,$reqBody);
-
         break;
+
+    case '/search':
+        $tag = RequestService::isParamSet('tag')? $_GET['tag'] : ResponseService::ResponseBadRequest();
+        $amount = RequestService::isNumericUrlParamDefined('amount')? $_GET['amount'] : 50;
+        $offset = RequestService::isNumericUrlParamDefined('offset')? $_GET['offset'] : 0;
+        getGameFromTag($token,$tag,$amount,$offset);
 
     case '/general':
         //TODO: ...
@@ -118,12 +133,20 @@ function unfavoriteSpecificGame($token, $id)
     ResponseService::ResponseJSON($game->arrayToJson($response));
 }
 
+function voteGame($token, $id,$bool){
+    Game::VoteGame($token, $id,$bool);
+}
+
 function createGame($token, $reqBody){
     $game = new Game();
     $game->constructFromHashMap($reqBody);
     $response = $game->createGame($token);
     ResponseService::ResponseJSON($game->arrayToJson($response));
+}
 
+function getGameFromTag($token,$tagName,$amount,$offset){
+    $games = Game::GetFromTag($token,$tagName,$amount,$offset);
+    ResponseService::ResponseJSON(json_encode($games));
 }
 
 

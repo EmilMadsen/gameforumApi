@@ -77,7 +77,7 @@ class Post extends AbstractModel {
         return (new PostsRepository())->setFavoritePost($token, $id, false);
     }
 
-    static function votePost($token,$id, $bool){
+    static function VotePost($token, $id, $bool){
         PostsRepository::votePost($token,$id,$bool);
     }
 
