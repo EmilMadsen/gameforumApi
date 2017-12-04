@@ -26,8 +26,12 @@ switch ($request){
 
     case '/specific':
 
+        RequestService::isNumericUrlParamDefined('id')? getSpecificGame($token, $_GET['id']) : ResponseService::ResponseBadRequest();
+        // I would do like ^^this instead, but dos'ent matter :p
+        /*
         if(isset($_GET['id'])) getSpecificGame($token, $_GET['id']);
         else {}// TODO: Handle id not being set..
+        */
         break;
 
     case '/frontpage':
@@ -37,16 +41,29 @@ switch ($request){
 
     case '/favorite':
 
-        if (isset($_GET['id'])) favoriteSpecificGame($token, $_GET['id']);
-        else {}// TODO: Handle id not being set..
+        RequestService::isNumericUrlParamDefined('id')? favoriteSpecificGame($token, $_GET['id']) : ResponseService::ResponseBadRequest();
+        /*
+        if (isset($_GET['id'])){
+            favoriteSpecificGame($token, $_GET['id']);
+        }else {
+            ResponseService::ResponseBadRequest();
+        }// TODO: Handle id not being set..
+        */
         break;
 
     case '/unfavorite':
 
+        RequestService::isNumericUrlParamDefined('id')? unfavoriteSpecificGame($token, $_GET['id']) : ResponseService::ResponseBadRequest();
+        /*
         if (isset($_GET['id'])) unfavoriteSpecificGame($token, $_GET['id']);
         else{} // TODO: Handle id not being set..
+        */
         break;
 
+    case '/create':
+        createGame($token,$reqBody);
+
+        break;
 
     case '/general':
         //TODO: ...
@@ -99,6 +116,14 @@ function unfavoriteSpecificGame($token, $id)
     $game = new Game();
     $response = $game->unfavoriteSpecificGame($token, $id);
     ResponseService::ResponseJSON($game->arrayToJson($response));
+}
+
+function createGame($token, $reqBody){
+    $game = new Game();
+    $game->constructFromHashMap($reqBody);
+    $response = $game->createGame($token);
+    ResponseService::ResponseJSON($game->arrayToJson($response));
+
 }
 
 

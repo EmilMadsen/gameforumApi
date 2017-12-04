@@ -14,7 +14,7 @@ include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/AbstractModel.php
 
 
 
-class Comment{
+class Comment extends AbstractModel {
 
     private $id;
     private $user_id;
@@ -44,12 +44,8 @@ class Comment{
     }
     public function createComment($token){
         $this->failOnInvalidModel();
-        $validation = new Validation();
         $procedures = new CommentsRepository();
-        $this->content = SanitizeService::SanitizeString($this->content);
-        if (!$validation->isValidToken($token)) ResponseService::ResponseBadRequest("Invalid Request-Body");
-
-        $this->id = $procedures->createComment($token,$this->post_id,$this->content);
+        return $procedures->createComment($token,$this->post_id,$this->content);
 
     }
 
@@ -66,20 +62,8 @@ class Comment{
         return $procedures->getCommentsOfPost($token, $post_id, $amount, $offset);
     }
 
-    public function arrayToJson($comments){
-        $result = "[";
-        if (!empty($comments) ){
-            foreach ($comments as $comment){
-                $result .= json_encode(get_object_vars($comment)).', ';
-            }
-            $result = substr($result,0,strlen($result)-2);
-        }
-        $result .= "]";
-        return $result;
-    }
-
-    public function idToJson(){
-        return json_encode($this->id);
+    static function voteComment($token,$id, $bool){
+        CommentsRepository::voteComment($token,$id,$bool);
     }
 
     private function failOnInvalidModel(){

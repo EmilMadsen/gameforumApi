@@ -109,6 +109,32 @@ class GameRepository
         return $result;
     }
 
+    public function createGame($token,$title,$description,$releaseDate,
+                               $publisherCompanyCode, $developerCompanyCode,$pictureFilePath){
+
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.game_create(:auth_token, :title, :content, :release_date, :publisher_code, :developer_code, :picture_file_path)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('title', $title, PDO::PARAM_STR);
+            $stmt->bindParam('content', $description, PDO::PARAM_STR);
+            $stmt->bindParam('release_date', $releaseDate, PDO::PARAM_STR);
+            $stmt->bindParam('publisher_code', $publisherCompanyCode, PDO::PARAM_INT);
+            $stmt->bindParam('developer_code', $developerCompanyCode, PDO::PARAM_INT);
+            $stmt->bindParam('picture_file_path', $pictureFilePath, PDO::PARAM_STR);
+
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+
+        return $result;
+
+    }
+
 
     // Get DB connection
     //--------------------------------------------------------------------------

@@ -28,29 +28,26 @@ switch ($request){
 
     case '/specific':
 
-        if(isset($_GET['id'])) getSpecificPost($token, $_GET['id']);
-        else {}// TODO: Handle id not being set..
+        RequestService::isNumericUrlParamDefined('id')? getSpecificPost($token, $_GET['id']) : ResponseService::ResponseBadRequest();
+
         break;
 
     case '/create':
-
-        //TODO:
+        createPost($token,$reqBody);
         break;
 
     case '/upvote':
-
-        // TODO:
+        $id = RequestService::isNumericUrlParamDefined('id')? $_GET['id'] : ResponseService::ResponseBadRequest();
+        upVotePost($token, $id);
         break;
 
     case '/downvote':
-
-        // TODO:
+        $id = RequestService::isNumericUrlParamDefined('id')? $_GET['id'] : ResponseService::ResponseBadRequest();
+        downVotePost($token, $id);
         break;
 
     case '/favorite':
-
-        if(isset($_GET['id'])) favoritePost($token, $_GET['id']);
-        else {}// TODO: Handle id not being set..
+        RequestService::isNumericUrlParamDefined('id')? favoritePost($token, $_GET['id']) : ResponseService::ResponseBadRequest();
         break;
 
     case '/unfavorite':
@@ -70,6 +67,7 @@ switch ($request){
         break;
 
     default:
+        var_dump($request);
         ResponseService::ResponseNotFound();
         break;
 }
@@ -81,21 +79,21 @@ function getSpecificPost($token, $id)
     ResponseService::ResponseJSON($post->arrayToJson($response));
 }
 
-function createPost($input,$token){
-//    $post = new Post();
-//    $post->constructFromHashMap($input);
-//    $post->createPost($token); // TODO
-//    ResponseService::ResponseJSON($post->idToJson());
+function createPost($token,$input){
+    $post = new Post();
+    $post->constructFromHashMap($input);
+    $response = $post->createPost($token);
+    ResponseService::ResponseJSON($post->arrayToJson($response));
 }
 
-function upvote($token, $id)
+function upVotePost($token, $id)
 {
-
+    Post::votePost($token,$id,true);
 }
 
-function downvote($token, $id)
+function downVotePost($token, $id)
 {
-
+    Post::votePost($token,$id,false);
 }
 
 function favoritePost($token, $id)

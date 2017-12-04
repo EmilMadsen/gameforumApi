@@ -18,6 +18,7 @@ include_once($_SERVER["DOCUMENT_ROOT"].'/gameforumApi/Entities/AbstractModel.php
 class Post extends AbstractModel {
 
     private $id;
+    private $game_id;
     private $user_id;
     private $username;
     private $title;
@@ -51,13 +52,9 @@ class Post extends AbstractModel {
     }
 
     public function createPost($token){
-//        $this->failOnInvalidModel($this->title, $this->content);
-//        $validation = new Validation();
-//        $procedures = new PostsRepository();
-//        $this->title = SanitizeService::SanitizeString($this->title);
-//        $this->content = SanitizeService::SanitizeString($this->content);
-//        if (!$validation->isValidToken($token)) ResponseService::ResponseBadRequest("Invalid Request-Body");
-//        $this->id = $procedures->createPost($token,$this->title,$this->content);
+        $this->failOnInvalidModel();
+        $procedures = new PostsRepository();
+        return $procedures->createPost($token,$this->game_id,$this->title,$this->content);
     }
 
     public function getNewest($token)
@@ -80,5 +77,17 @@ class Post extends AbstractModel {
         return (new PostsRepository())->setFavoritePost($token, $id, false);
     }
 
+    static function votePost($token,$id, $bool){
+        PostsRepository::votePost($token,$id,$bool);
+    }
+
+    public function failOnInvalidModel()
+    {
+        if (!Validation::isValidTitle($this->title) ||
+            !Validation::isValidContent($this->content) ||
+            !Validation::isNumeric($this->game_id)){
+            ResponseService::ResponseBadRequest("Invalid Request-Body");
+        }
+    }
 
 }

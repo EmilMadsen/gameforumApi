@@ -64,7 +64,7 @@ class Game extends AbstractModel {
         $data = json_decode($json, true);
         if (empty($data)) ResponseService::ResponseBadRequest("Invalid Request-Body");
         foreach ($data AS $key => $value) $this->{$key} = $value;
-        $this->failOnInvalidModel($this->title, $this->description);
+        $this->failOnInvalidModel();
     }
 
     public function getSpecificGame($token, $id)
@@ -87,4 +87,22 @@ class Game extends AbstractModel {
         return (new GameRepository())->setFavoriteGame($token, $id, false);
     }
 
+    public function createGame($token){
+
+        return (new GameRepository())->createGame($token,$this->title,$this->description,
+                            $this->releaseDate, $this->publisherCompanyCode,
+                            $this->developerCompanyCode,$this->pictureFilePath);
+    }
+
+    public function failOnInvalidModel()
+    {
+        if (!Validation::isValidTitle($this->title) ||
+            !Validation::isValidContent($this->description) ||
+            !Validation::isNumeric($this->publisherCompanyCode)  ||
+            !Validation::isNumeric($this->developerCompanyCode) ||
+            empty($this->releaseDate)
+        ){
+            ResponseService::ResponseBadRequest("Invalid Request-Body");
+        }
+    }
 }

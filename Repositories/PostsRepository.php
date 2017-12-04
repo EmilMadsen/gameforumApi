@@ -62,9 +62,26 @@ class PostsRepository{
         return $postsArray;
     }
 
-    public function createPost($authToken, $title, $content)
+    public function createPost($token, $game_id, $title, $content)
     {
+        try {
+            $connection = $this->getDatabaseConnection();
+            $stmt = $connection->prepare("CALL game_forum.post_create(:auth_token, :game_id, :title, :content)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('game_id', $game_id, PDO::PARAM_INT);
+            $stmt->bindParam('title', $title, PDO::PARAM_STR);
+            $stmt->bindParam('content', $content, PDO::PARAM_STR);
 
+
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+
+        return $result;
     }
 
     public function getNewest($token, $batch_size = 50, $off_set = 0)
@@ -134,6 +151,23 @@ class PostsRepository{
 
         return $result;
     }
+
+
+    static function votePost($token, $id,$bool){
+        try {
+            $connection = DatabaseConnection::getConnection();
+            $stmt = $connection->prepare("CALL game_forum.post_vote(:auth_token, :post_id, :vote_value)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('post_id', $id, PDO::PARAM_INT);
+            $stmt->bindParam('vote_value', $bool, PDO::PARAM_BOOL);
+            $stmt->execute();
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {ResponseService::ResponseInternalError();}
+    }
+
     //--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
 

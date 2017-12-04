@@ -53,7 +53,6 @@ class CommentsRepository{
     //---------------------------------------------------------------------
 
     public function createComment($token, $post_id, $content){
-        $id = 0;
 
         try{
             $connection = $this->getDatabaseConnection();
@@ -62,11 +61,10 @@ class CommentsRepository{
             $stmt->bindParam('post_id', $post_id, PDO::PARAM_INT);
             $stmt->bindParam('content', $content, PDO::PARAM_STR);
             $stmt->execute();
-            $id = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
         catch (PDOException $e){
-            var_dump($e->getMessage());
-
+            var_dump($e);
             if ($e->getCode() == 45000) {
                 ResponseService::ResponseBadRequest($e->errorInfo[2]);
             }elseif ($e->getCode() == 23000) {
@@ -76,11 +74,25 @@ class CommentsRepository{
             }
         }
         catch (Exception $e){
-            var_dump($e->getMessage());
             ResponseService::ResponseInternalError();
         }
+        return  $result;
+    }
 
-        return  $id;
+
+    static function voteComment($token, $id,$bool){
+        try {
+            $connection = DatabaseConnection::getConnection();
+            $stmt = $connection->prepare("CALL game_forum.comment_vote(:auth_token, :comment_id, :vote_value)");
+            $stmt->bindParam('auth_token', $token, PDO::PARAM_STR);
+            $stmt->bindParam('comment_id', $id, PDO::PARAM_INT);
+            $stmt->bindParam('vote_value', $bool, PDO::PARAM_BOOL);
+            $stmt->execute();
+
+        } catch (PDOException $e) {
+            if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
+            else {ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {ResponseService::ResponseInternalError();}
     }
 
     private function getDatabaseConnection(){

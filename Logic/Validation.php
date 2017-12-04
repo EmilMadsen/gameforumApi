@@ -132,6 +132,11 @@ class Validation{
         return (!empty($content));
     }
 
+    public static function isNumeric($number){
+        $result = (empty($number) || !is_numeric($number))? false : true;
+        return $result;
+    }
+
     /**
      * A private method to verifies that the length of a string is between the 'max' & 'min' values.
      * @param $min, an integer representing the minimum length of the string.

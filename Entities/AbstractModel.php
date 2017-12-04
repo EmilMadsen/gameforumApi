@@ -33,11 +33,5 @@ abstract class AbstractModel
         return json_encode($id);
     }
 
-    public function failOnInvalidModel($title, $content)
-    {
-        if (!Validation::isValidTitle($title) ||
-            !Validation::isValidContent($content)){
-            ResponseService::ResponseBadRequest("Invalid Request-Body");
-        }
-    }
+
 }

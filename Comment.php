@@ -32,22 +32,24 @@ $token = RequestService::GetToken();
 //------------------------------------------------------------------------------
 
 $request = $_SERVER['PATH_INFO'];
+$reqBody = file_get_contents('php://input');
 
 
 // HANDLE REQUEST
 switch ($request){
 
     case '/create':
-        // TODO...
-        echo 'This is not implemented..';
+        createComment($token,$reqBody);
         break;
 
-    case 'upvote':
-        // TODO...
+    case '/upvote':
+        $id = RequestService::isNumericUrlParamDefined('id')? $_GET['id'] : ResponseService::ResponseBadRequest();
+        upVotePost($token, $id);
         break;
 
-    case 'downvote':
-        //TODO:..
+    case '/downvote':
+        $id = RequestService::isNumericUrlParamDefined('id')? $_GET['id'] : ResponseService::ResponseBadRequest();
+        downVotePost($token, $id);
         break;
 
     default:
@@ -55,11 +57,21 @@ switch ($request){
         break;
 }
 
-// ++ //
-//function createComment($token, $input){
-//    $comment = new Comment();
-//    $comment->constructFromHashMap($input);
-//    $comment->createComment($token);
-//    ResponseService::ResponseJSON($comment->idToJson());
-//
-//}
+
+function createComment($token, $input){
+    $comment = new Comment();
+    $comment->constructFromHashMap($input);
+    $response = $comment->createComment($token);
+    ResponseService::ResponseJSON($comment->arrayToJson($response));
+
+}
+
+function upVotePost($token, $id)
+{
+    Comment::voteComment($token,$id,true);
+}
+
+function downVotePost($token, $id)
+{
+    Comment::voteComment($token,$id,false);
+}
