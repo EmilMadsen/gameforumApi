@@ -31,7 +31,7 @@ class Post extends AbstractModel {
         $data = json_decode($json, true);
         if (empty($data)) ResponseService::ResponseBadRequest("Invalid Request-Body");
         foreach ($data AS $key => $value) $this->{$key} = $value;
-        $this->failOnInvalidModel($this->title, $this->content);
+        $this->failOnInvalidModel();
     }
 
     public function construct($id, $userId, $username, $title, $content, $createdAt, $updatedAt, $deletedAt){
@@ -77,15 +77,15 @@ class Post extends AbstractModel {
         return (new PostsRepository())->setFavoritePost($token, $id, false);
     }
 
-    static function VotePost($token, $id, $bool){
-        PostsRepository::votePost($token,$id,$bool);
+    static function VotePost($token, $id, $bool)
+    {
+        return PostsRepository::votePost($token,$id,$bool);
     }
 
     public function failOnInvalidModel()
     {
-        if (!Validation::isValidTitle($this->title) ||
-            !Validation::isValidContent($this->content) ||
-            !Validation::isNumeric($this->game_id)){
+        if (!Validation::isValidTitle($this->title) || !Validation::isValidContent($this->content) || !Validation::isNumeric($this->game_id))
+        {
             ResponseService::ResponseBadRequest("Invalid Request-Body");
         }
     }

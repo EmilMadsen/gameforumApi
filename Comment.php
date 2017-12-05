@@ -68,10 +68,13 @@ function createComment($token, $input){
 
 function upVotePost($token, $id)
 {
-    Comment::voteComment($token,$id,true);
+    $response = Comment::voteComment($token,$id,true);
+    ResponseService::ResponseJSON((new Comment())->arrayToJson($response));
+
 }
 
 function downVotePost($token, $id)
 {
-    Comment::voteComment($token,$id,false);
+    $response = Comment::voteComment($token,$id,false);
+    ResponseService::ResponseJSON((new Comment())->arrayToJson($response));
 }

@@ -63,7 +63,7 @@ class Comment extends AbstractModel {
     }
 
     static function voteComment($token,$id, $bool){
-        CommentsRepository::voteComment($token,$id,$bool);
+        return CommentsRepository::voteComment($token,$id,$bool);
     }
 
     private function failOnInvalidModel(){

@@ -86,12 +86,15 @@ function createPost($token,$input){
 
 function upVotePost($token, $id)
 {
-    Post::VotePost($token,$id,true);
+    $response = Post::VotePost($token,$id,true);
+    ResponseService::ResponseJSON((new Post())->arrayToJson($response));
 }
 
 function downVotePost($token, $id)
 {
-    Post::VotePost($token,$id,false);
+    $response = Post::VotePost($token,$id,false);
+    ResponseService::ResponseJSON((new Post())->arrayToJson($response));
+
 }
 
 function favoritePost($token, $id)

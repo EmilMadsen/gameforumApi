@@ -161,6 +161,8 @@ class PostsRepository{
             $stmt->bindParam('post_id', $id, PDO::PARAM_INT);
             $stmt->bindParam('vote_value', $bool, PDO::PARAM_BOOL);
             $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
