@@ -33,6 +33,9 @@ class PostsRepository{
             }
         } catch (Exception $e) {
             ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
         }
 
         // Get comments for that post
@@ -54,6 +57,9 @@ class PostsRepository{
             }
         } catch (Exception $e) {
             ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
         }
 
         $postsArray['post'] = $result[0];
@@ -79,7 +85,12 @@ class PostsRepository{
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {die($e);ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {
+            die($e);ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
+        }
 
         return $result;
     }
@@ -103,6 +114,9 @@ class PostsRepository{
             }
         } catch (Exception $e) {
             ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
         }
 
         return $result;
@@ -127,6 +141,9 @@ class PostsRepository{
             }
         } catch (Exception $e) {
             ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
         }
 
         return $result;
@@ -147,7 +164,12 @@ class PostsRepository{
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {die($e);ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {
+            die($e);ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
+        }
 
         return $result;
     }
@@ -167,7 +189,12 @@ class PostsRepository{
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {
+            ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
+        }
     }
 
     //--------------------------------------------------------------------------

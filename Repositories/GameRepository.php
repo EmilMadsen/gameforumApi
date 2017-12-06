@@ -32,6 +32,9 @@ class GameRepository
         } catch (Exception $e) {
             die($e);
             ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
         }
 
         return $result;
@@ -60,6 +63,9 @@ class GameRepository
             }
         } catch (Exception $e) {
             ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
         }
 
         // Get posts for that game
@@ -81,6 +87,9 @@ class GameRepository
             }
         } catch (Exception $e) {
             ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
         }
 
         $gameArray['game'] = $result[0];
@@ -103,7 +112,12 @@ class GameRepository
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {die($e);ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {
+            die($e);ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
+        }
 
         return $result;
     }
@@ -123,7 +137,12 @@ class GameRepository
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {die($e);ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {
+            die($e);ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
+        }
 
         return $result;
     }
@@ -140,7 +159,12 @@ class GameRepository
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {
+            ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
+        }
     }
 
     public function createGame($token,$title,$description,$releaseDate,
@@ -163,7 +187,12 @@ class GameRepository
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {die($e);ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {die($e);ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {
+            die($e);ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
+        }
 
         return $result;
 

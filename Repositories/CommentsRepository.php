@@ -45,6 +45,9 @@ class CommentsRepository{
         }
         catch (Exception $e){
             ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
         }
 
         return $commentsArray;
@@ -75,6 +78,9 @@ class CommentsRepository{
         }
         catch (Exception $e){
             ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
         }
         return  $result;
     }
@@ -93,7 +99,12 @@ class CommentsRepository{
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {ResponseService::ResponseInternalError();}
+        } catch (Exception $e) {
+            ResponseService::ResponseInternalError();
+        }finally{
+            $connection = null;
+            $stmt = null;
+        }
     }
 
     private function getDatabaseConnection(){
