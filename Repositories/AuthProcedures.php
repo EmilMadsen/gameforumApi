@@ -45,9 +45,6 @@ class AuthProcedures{
 
         }catch (Exception $e){
             $salt = "dummy";
-        }finally{
-            $connection = null;
-            $stmt = null;
         }
         return $salt;
     }
@@ -91,9 +88,6 @@ class AuthProcedures{
             ResponseService::ResponseBadRequest("Exception in Login User");
 
 //            ResponseService::ResponseInternalError();
-        }finally{
-            $connection = null;
-            $stmt = null;
         }
         return $authToken;
     }
@@ -121,9 +115,6 @@ class AuthProcedures{
             ResponseService::ResponseBadRequest("Something bad..");
 
 //            ResponseService::ResponseInternalError();
-        }finally{
-            $connection = null;
-            $stmt = null;
         }
     }
 
@@ -148,12 +139,7 @@ class AuthProcedures{
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {
-            ResponseService::ResponseInternalError();
-        }finally{
-            $connection = null;
-            $stmt = null;
-        }
+        } catch (Exception $e) {ResponseService::ResponseInternalError();}
 
         // Get favorite games for that user
         try {
@@ -168,13 +154,7 @@ class AuthProcedures{
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {die($e);ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {
-            die($e);ResponseService::ResponseInternalError();
-        }
-        finally{
-            $connection = null;
-            $stmt = null;
-        }
+        } catch (Exception $e) {die($e);ResponseService::ResponseInternalError();}
 
         // Get favorite posts for that user
         try {
@@ -189,12 +169,7 @@ class AuthProcedures{
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {
-            ResponseService::ResponseInternalError();
-        }finally{
-            $connection = null;
-            $stmt = null;
-        }
+        } catch (Exception $e) {ResponseService::ResponseInternalError();}
 
         // Get comments for that user
         try {
@@ -209,12 +184,7 @@ class AuthProcedures{
         } catch (PDOException $e) {
             if ($e->getCode() == 45000) {ResponseService::ResponseBadRequest($e->errorInfo[2]);}
             else {ResponseService::ResponseInternalError();}
-        } catch (Exception $e) {
-            ResponseService::ResponseInternalError();
-        }finally{
-            $connection = null;
-            $stmt = null;
-        }
+        } catch (Exception $e) {ResponseService::ResponseInternalError();}
 
         $profile['user'] = $result[0];
         $profile['user']['favorite_games'] = $favorite_games;
