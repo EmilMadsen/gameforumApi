@@ -65,7 +65,7 @@ class GameRepository
         // Get posts for that game
         try {
             $connection = $this->getDatabaseConnection();
-            $stmt = $connection->prepare("CALL game_forum.post_get_from_game(:auth_token, :game_id ,:batch_size, :off_set)");
+            $stmt = $connection->prepare("CALL game_forum.post_get_from_game_optimized(:auth_token, :game_id ,:batch_size, :off_set)");
             $stmt->bindParam('auth_token', $authToken, PDO::PARAM_STR);
             $stmt->bindParam('game_id', $id, PDO::PARAM_INT);
             $stmt->bindParam('batch_size', $batch_size, PDO::PARAM_INT);
